@@ -1,0 +1,41 @@
+name: Teste CI - Cypress
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+  
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write
+    
+    steps:
+    - name: Clonar repositório
+      uses: actions/checkout@v4
+    
+    - name: Use Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 24
+        cache: 'npm'
+    
+    - name: Instalar dependencias
+      run: npm ci
+    
+    - name: Executar testes
+      run: npm run cy:run
+    
+    - name: Fazer backup do histórico (Bash)
+      run: npm run report:backup-history-bash  
+    
+    - name: Gerar relatório Allure
+      run: npm run report:gen
+    
+    - name: Publicar relatório no Gh Pages
+      uses: peaceiris/actions-gh-pages@v4
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./allure-report report", não "public"
